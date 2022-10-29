@@ -434,6 +434,22 @@ Kemudian pada konfigurasi site di `/etc/apache2/sites-available/strix.operation.
     Require valid-user
 </Directory>
 ```
+## Soal 16
+Pada soal 16 diminta apabila mengakses ip Eden `192.182.3.2` akan dialihkan ke `www.wise.C06.com`, maka di default site pada direktori `/var/www/html` perlu ditambahkan file `.htaccess`
+```
+RewriteEngine On
+RewriteBase /
+RewriteCond %{HTTP_HOST} ^192\.182\.3\.2$
+RewriteRule ^(.*)$ http://wise.C06.com/$1 [L,R=301]
+```
+Kemudian pada file `/etc/apache2/sites-available/000-default.conf` ditambahkan
+```
+<Directory /var/www/html>
+    Options +FollowSymLinks -Multiviews
+    AllowOverride All
+</Directory>
+```
+
 ## Soal 17
 Setiap gambar dengan substring `eden` akan dialihkan ke `eden.png` sehingga perlu ditambahkan file `.htaccess` pada `/var/www/eden.wise.C06.com/public/images/` sebagai berikut:
 ```
