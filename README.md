@@ -196,6 +196,131 @@ host -t CNAME www.eden.wise.C06.com
 
 ![Testing-3](https://cdn.discordapp.com/attachments/855800698602913792/1035906945816743947/unknown.png)
 
+Untuk nomor 8-17 semua konfigurasi akan dilakukan di **Eden**.
+Langkah yang perlu dilakukan di **Eden** adalah:
+```sh
+apt-get update
+apt-get install apache2 php unzip wget -y
+```
+Selain itu di client perlu dilakukan instalasi `lynx` untuk membuka website melalui console.
+```sh
+apt-get install lynx
+``` 
+## Soal 8
+Pada nomor 8 diminta untuk melakukan konfigurasi webserver pada alamat `www.wise.C06.com` dengan `DocumentRoot` pada `/var/www/wise.C06.com`. <br />
+Untuk itu, untuk mendapatkan resource maka perlu dilakukan `wget` dengan perintah
+```sh
+
+```
+Setelah itu dilakukan konfigurasi pada `/etc/apache2/sites-available` dengan menambahkan file `wise.C06.com.conf`. Konfigurasi yang dilakukan adalah sebagai berikut:
+```
+<VirtualHost *:80>
+    ServerName wise.C06.com
+    ServerAlias www.wise.C06.com
+    ServerAdmin webmaster@localhost
+    DocumentRoot /var/www/wise.C06.com
+</VirtualHost>
+```
+Selanjutnya dilakukan 
+```
+a2ensite wise.C06.com
+```
+untuk melakukan enable pada site. <br />
+Setelah site di-enable, apache2 direload dengan perintah:
+```
+service apache2 reload
+```
+Testing dilakukan di client dengan mengetikkan
+```
+lynx wise.C06.com
+```
+
+## Soal 9
+Pada soal 9, dibutuhkan agar url www.wise.C06.com/index.php/home dapat menjadi menjadi www.wise.C06.com/home. <br />
+Untuk itu di folder `/var/www/wise.C06.com` ditambahkan file `.htaccess` yang berisi:
+```
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([^\.]+)$ index.php/$1 [NC,L]
+```
+Kemudian pada konfigurasi site di `/etc/apache2/sites-available/wise.C06.com` ditambahkan konfigurasi sebagai berikut:
+```
+<Directory /var/www/wise.C06.com>
+    Options +FollowSymLinks -Multiviews
+    AllowOverride All
+</Directory>
+```
+Karena diperlukan modul rewrite untuk memanipulasi url, maka perlu menjalankan perintah
+```
+a2enmod rewrite
+```
+
+## Soal 10
+Pada soal 10 subdomain `eden.wise.C06.com` diperlukan penyimpanan asset pada `/var/www/eden.wise.C06.com`. <br />
+Untuk itu, untuk mendapatkan resource maka perlu dilakukan `wget` dengan perintah
+```sh
+
+```
+Setelah itu dilakukan konfigurasi di `/etc/apache2/sites-available/eden.wise.C06.com` sebagai berikut:
+```
+<VirtualHost *:80>
+    ServerName eden.wise.C06.com
+    ServerAlias www.eden.wise.C06.com
+    ServerAdmin webmaster@localhost
+    DocumentRoot /var/www/eden.wise.C06.com
+</VirtualHost>
+```
+Selanjutnya situs perlu di-enable dengan command
+```
+a2ensite eden.wise.C06.com
+```
+
+## Soal 11
+Pada soal 11, diminta untuk melakukan directory listing pada folder `/public`. Untuk melakukan directory listing, pada `/etc/apache2/sites-available/eden.wise.C06.com.conf` ditambahkan konfigurasi:
+```
+<Directory /var/www/eden.wise.C06.com/public>
+        Options +Indexes
+</Directory>
+```
+Lalu, karena hanya ingin melakukan directory listing tanpa dapat mengakses file di dalamnya maka ditambahkan:
+```
+<Directory /var/www/eden.wise.C06.com/public/*>
+        Options -Indexes
+</Directory>
+```
+
+## Soal 12
+Karena ingin menggunakan custom error file, maka pada konfigurasi di `/etc/apache2/sites-available/eden.wise.C06.com` ditambahkan:
+```
+ErrorDocument 404 /error/404.html
+```
+
+## Soal 13
+Agar url `www.eden.wise.C06.com/public/js` bisa diakses dengan membuka `www.eden.wise.C06.com/js` diperlukan directory alias pada konfigurasi `/etc/apache2/sites-available/eden.wise.C06.com`
+```
+Alias "/js" "/var/www/eden.wise.C06.com/public/js"
+```
+Karena sebelumnya direktori `js` tidak dapat diakses maka perlu ditambahkan:
+```
+<Directory /var/www/eden.wise.C06.com/public/js>
+        Options +Indexes
+</Directory>
+```
+
+## Soal 17
+Setiap gambar dengan substring `eden` akan dialihkan ke `eden.png` sehingga perlu ditambahkan file `.htaccess` pada `/var/www/eden.wise.C06.com/public/images/` sebagai berikut:
+```
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule (.*)eden(.*)(png|jpg) http://eden.wise.C06.com/public/images/eden.png
+```
+Kemudian pada `/etc/apache2/sites-available/eden.wise.C06.com` perlu ditambahkan konfigurasi agar direktory imagesnya bisa diakses:
+```
+<Directory /var/www/eden.wise.C06.com/public/images>
+    Options +FollowSymLinks -Multiviews +Indexes
+    AllowOverride All
+</Directory>
+```
 ## Revisi
 
 ### Nomor 14 dan 15
