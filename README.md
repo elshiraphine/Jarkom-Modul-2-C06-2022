@@ -206,6 +206,100 @@ Selain itu di client perlu dilakukan instalasi `lynx` untuk membuka website mela
 ```sh
 apt-get install lynx
 ``` 
+## Soal 4
+
+Buat juga reverse domain untuk domain utama (4)
+
+Untuk itu, setup data file bind untuk reverse domain pada wise seperti berikut:
+
+```
+cp /etc/bind/db.local /etc/bind/wise/1.182.192.in-addr.arpa
+nano /etc/bind/wise/1.182.192.in-addr.arpa
+```
+
+Konfigurasi data file bind wise seperti berikut:
+
+```
+;
+; BIND data file for local loopback interface
+;
+$TTL    604800
+@       IN      SOA     wise.C06.com. root.wise.C06.com. (
+                     2022102601         ; Serial
+                         604800         ; Refresh
+                        86400           ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+1.182.192.in-addr.arpa.       IN      NS      wise.C06.com.
+2       IN      PTR     wise.C06.com.
+```
+
+![WISE-Konfigurasi](https://cdn.discordapp.com/attachments/855800698602913792/1035908043453513808/unknown.png)
+Tambahkan konfigurasi zonasi juga dengan menambahkan pada `nano /etc/bind/named.conf.local` WISE:
+
+```
+zone "1.182.192.in-addr.arpa" {
+  type master;
+  file "/etc/bind/wise/1.182.192.in-addr.arpa";
+};
+```
+
+![WISE-NameConf-Reverse](https://cdn.discordapp.com/attachments/855800698602913792/1035908784134029314/unknown.png)
+
+Setelah itu, restart bind pada wise dengan command `service bind9 restart`
+
+Lakukan testing pada client (SSS atau Garden) dengan memasukkan command berikut:
+
+```
+host -t PTR "192.182.1.2"
+```
+
+![Testing-4](https://cdn.discordapp.com/attachments/855800698602913792/1035909198342529154/unknown.png)
+
+## Soal 5
+
+Agar dapat tetap dihubungi jika server WISE bermasalah, buatlah juga Berlint sebagai DNS Slave untuk domain utama (5).
+
+Untuk itu, ubah konfigurasi zonasi wise.c06.com pada `nano /etc/bind/named.conf.local` WISE seperti berikut:
+
+```
+zone "wise.C06.com" {
+  type master;
+  notify yes;
+  also-notify { 192.182.3.3; };
+  allow-transfer { 192.182.3.3; };
+  file "/etc/bind/wise/wise.C06.com";
+};
+```
+
+![WISE-NameConf-5](https://cdn.discordapp.com/attachments/855800698602913792/1035912516112498748/unknown.png)
+
+Selain itu, tambah juga konfigurasi zonasi wise.c06.com pada `nano /etc/bind/named.conf.local` **Berlint** seperti berikut:
+
+```
+zone "wise.C06.com" {
+   type slave;
+   masters { 192.182.1.2; };
+   file "/var/lib/bind/wise.C096.com";
+};
+```
+
+Setelah itu, restart bind pada Berlint dengan command `service bind9 restart`
+
+Untuk membuktikan pengujian benar, stop bind di wise terlebih dahulu dengan command `service bind9 stop`. Selanjutnya, tinggal melakukan testing pada client (SSS atau Garden) dengan memasukkan command berikut:
+
+```
+ping wise.C06.com
+ping www.wise.C06.com
+ping eden.wise.C06.com
+ping www.eden.wise.C06.com
+host -t CNAME www.eden.wise.C06.com
+host -t PTR "192.182.1.2"
+```
+
+![Testing-5](https://cdn.discordapp.com/attachments/855800698602913792/1035913657185484820/unknown.png)
+
 ## Soal 8
 Pada nomor 8 diminta untuk melakukan konfigurasi webserver pada alamat `www.wise.C06.com` dengan `DocumentRoot` pada `/var/www/wise.C06.com`. <br />
 Untuk itu, untuk mendapatkan resource maka perlu dilakukan `wget` dengan perintah
