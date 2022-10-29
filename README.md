@@ -306,7 +306,40 @@ Karena sebelumnya direktori `js` tidak dapat diakses maka perlu ditambahkan:
         Options +Indexes
 </Directory>
 ```
-
+## Soal 14
+Pada soal 14 site `www.strix.operation.wise.C06.com` hanya bisa diakses dengan port 15000 dan 15500.
+Untuk itu perlu dilakukan konfigurasi pada `/etc/apache2/ports.conf` dengan menambahkan:
+```
+Listen 15500
+Listen 15000
+```
+Sehingga konfigurasi situsnya menjadi:
+```
+<VirtualHost *:15000 *:15500>
+    ServerName strix.operation.wise.C06.com
+    ServerAlias www.strix.operation.wise.C06.com
+    ServerAdmin webmaster@localhost
+    DocumentRoot /var/www/strix.operation.wise.C06.com
+</VirtualHost>
+```
+## Soal 15
+Untuk membuat autentikasi, pada folder `/etc/apache2` ditambahkan file `.htpasswd` dengan perintah
+```
+touch .httpasswd
+```
+Untuk membuat basic auth dilakukan perintah:
+```
+htpasswd -nb Twilight opStrix > /etc/apache2/.htpasswd
+```
+Kemudian pada konfigurasi site di `/etc/apache2/sites-available/strix.operation.wise.C06.com.conf` ditambahkan:
+```
+<Directory /var/www/strix.operation.wise.C06.com>
+    AuthType Basic
+    AuthName "Restricted Files"
+    AuthUserFile /etc/apache2/.htpasswd
+    Require valid-user
+</Directory>
+```
 ## Soal 17
 Setiap gambar dengan substring `eden` akan dialihkan ke `eden.png` sehingga perlu ditambahkan file `.htaccess` pada `/var/www/eden.wise.C06.com/public/images/` sebagai berikut:
 ```
