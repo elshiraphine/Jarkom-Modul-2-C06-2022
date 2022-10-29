@@ -7,7 +7,7 @@
 Karena config pada apache2 nya sudah benar. Untuk melakukan testing dilakukan perubahan pada DNS yang ada pada Berlint (Slave) dan WISE (DNS Masters).
 Perubahan adalah sebagai berikut:
 1. Pada `/etc/bind/named.conf.local` di **WISE (DNS Masters)**
-   ```bash
+   ```conf
    zone "wise.C06.com" {
         type master;
         file "/etc/bind/wise/wise.C06.com";
@@ -18,12 +18,12 @@ Perubahan adalah sebagai berikut:
     };
    ```
 2. Pada `/etc/bind/wise/wise.C06.com` di **WISE (DNS Masters)** ditambahkan
-   ```bash
+   ```conf
     ns1             IN      A       192.182.3.3     ; IP Berlint
     operation       IN      NS      ns1
    ```
 3. Pada `/etc/bind/named.conf.local` di **Berlint (Slave)**
-   ```bash
+   ```conf
     zone "wise.C06.com" {
         type slave;
         masters { 192.182.1.2; };
@@ -36,7 +36,7 @@ Perubahan adalah sebagai berikut:
     };
    ```
 4. Pada `/etc/bind/operation/operation.wise.C06.com` di **Berlint (Slave)** ditambahkan
-   ```bash
+   ```conf
     @               IN      NS      operation.wise.C06.com.
     @               IN      A       192.182.3.2             ; IP Eden
     www             IN      CNAME   operation.wise.C06.com.
