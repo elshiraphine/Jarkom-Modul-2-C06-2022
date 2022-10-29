@@ -392,7 +392,7 @@ Lalu, karena hanya ingin melakukan directory listing tanpa dapat mengakses file 
         Options -Indexes
 </Directory>
 ```
-![](https://github.com/elshiraphine/Jarkom-Modul-2-C06-2022/blob/main/ss/11.gif)
+![](https://github.com/elshiraphine/Jarkom-Modul-2-C06-2022/blob/main/ss/11b.gif)
 ## Soal 12
 Karena ingin menggunakan custom error file, maka pada konfigurasi di `/etc/apache2/sites-available/eden.wise.C06.com` ditambahkan:
 ```
