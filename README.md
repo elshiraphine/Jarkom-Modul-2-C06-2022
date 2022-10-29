@@ -304,6 +304,10 @@ host -t PTR "192.182.1.2"
 Pada nomor 8 diminta untuk melakukan konfigurasi webserver pada alamat `www.wise.C06.com` dengan `DocumentRoot` pada `/var/www/wise.C06.com`. <br />
 Untuk itu, untuk mendapatkan resource maka perlu dilakukan `wget` dengan perintah
 ```sh
+wget "https://drive.google.com/uc?export=download&id=1S0XhL9ViYN7TyCj2W66BNEXQD2AAAw2e" -O wise.zip
+unzip wise.zip -d wise
+mv wise wise.C06.com
+mv wise.C06.com /var/www/wise.C06.com
 
 ```
 Setelah itu dilakukan konfigurasi pada `/etc/apache2/sites-available` dengan menambahkan file `wise.C06.com.conf`. Konfigurasi yang dilakukan adalah sebagai berikut:
@@ -328,7 +332,7 @@ Testing dilakukan di client dengan mengetikkan
 ```
 lynx wise.C06.com
 ```
-
+![](https://media.discordapp.net/attachments/964890423946543124/1035984730052640789/2022-10-30_01-21-55.gif?width=893&height=671)
 ## Soal 9
 Pada soal 9, dibutuhkan agar url www.wise.C06.com/index.php/home dapat menjadi menjadi www.wise.C06.com/home. <br />
 Untuk itu di folder `/var/www/wise.C06.com` ditambahkan file `.htaccess` yang berisi:
@@ -348,11 +352,16 @@ Karena diperlukan modul rewrite untuk memanipulasi url, maka perlu menjalankan p
 ```
 a2enmod rewrite
 ```
+![](https://media.discordapp.net/attachments/964890423946543124/1035984729532538962/2022-10-30_01-21-26.gif?width=893&height=671)
 
 ## Soal 10
 Pada soal 10 subdomain `eden.wise.C06.com` diperlukan penyimpanan asset pada `/var/www/eden.wise.C06.com`. <br />
 Untuk itu, untuk mendapatkan resource maka perlu dilakukan `wget` dengan perintah
 ```sh
+wget "https://drive.google.com/uc?export=download&id=1q9g6nM85bW5T9f5yoyXtDqonUKKCHOTV" -O eden.zip
+unzip eden.zip -d eden
+mv eden eden.wise.C06.com
+mv eden.wise.C06.com /var/www/eden.wise.C06.com
 
 ```
 Setelah itu dilakukan konfigurasi di `/etc/apache2/sites-available/eden.wise.C06.com` sebagai berikut:
@@ -368,7 +377,7 @@ Selanjutnya situs perlu di-enable dengan command
 ```
 a2ensite eden.wise.C06.com
 ```
-
+![](https://media.discordapp.net/attachments/964890423946543124/1035984730052640789/2022-10-30_01-21-55.gif?width=893&height=671)
 ## Soal 11
 Pada soal 11, diminta untuk melakukan directory listing pada folder `/public`. Untuk melakukan directory listing, pada `/etc/apache2/sites-available/eden.wise.C06.com.conf` ditambahkan konfigurasi:
 ```
@@ -376,19 +385,20 @@ Pada soal 11, diminta untuk melakukan directory listing pada folder `/public`. U
         Options +Indexes
 </Directory>
 ```
+![](https://media.discordapp.net/attachments/964890423946543124/1035984730530779156/2022-10-30_01-24-17.gif?width=893&height=671)
 Lalu, karena hanya ingin melakukan directory listing tanpa dapat mengakses file di dalamnya maka ditambahkan:
 ```
 <Directory /var/www/eden.wise.C06.com/public/*>
         Options -Indexes
 </Directory>
 ```
-
+![](https://media.discordapp.net/attachments/964890423946543124/1035984728236494898/2022-10-30_01-23-51.gif?width=893&height=671)
 ## Soal 12
 Karena ingin menggunakan custom error file, maka pada konfigurasi di `/etc/apache2/sites-available/eden.wise.C06.com` ditambahkan:
 ```
 ErrorDocument 404 /error/404.html
 ```
-
+![](https://media.discordapp.net/attachments/964890423946543124/1035984729087951008/2022-10-30_01-22-18.gif?width=893&height=671)
 ## Soal 13
 Agar url `www.eden.wise.C06.com/public/js` bisa diakses dengan membuka `www.eden.wise.C06.com/js` diperlukan directory alias pada konfigurasi `/etc/apache2/sites-available/eden.wise.C06.com`
 ```
@@ -400,6 +410,7 @@ Karena sebelumnya direktori `js` tidak dapat diakses maka perlu ditambahkan:
         Options +Indexes
 </Directory>
 ```
+![](https://media.discordapp.net/attachments/964890423946543124/1035984732359499886/2022-10-30_01-24-34.gif?width=893&height=671)
 ## Soal 14
 Pada soal 14 site `www.strix.operation.wise.C06.com` hanya bisa diakses dengan port 15000 dan 15500.
 Untuk itu perlu dilakukan konfigurasi pada `/etc/apache2/ports.conf` dengan menambahkan:
@@ -416,6 +427,7 @@ Sehingga konfigurasi situsnya menjadi:
     DocumentRoot /var/www/strix.operation.wise.C06.com
 </VirtualHost>
 ```
+![](https://media.discordapp.net/attachments/964890423946543124/1035984728643346603/2022-10-30_01-26-46.gif?width=893&height=671)
 ## Soal 15
 Untuk membuat autentikasi, pada folder `/etc/apache2` ditambahkan file `.htpasswd` dengan perintah
 ```
@@ -434,6 +446,7 @@ Kemudian pada konfigurasi site di `/etc/apache2/sites-available/strix.operation.
     Require valid-user
 </Directory>
 ```
+![](https://media.discordapp.net/attachments/964890423946543124/1035984728643346603/2022-10-30_01-26-46.gif?width=893&height=671)
 ## Soal 16
 Pada soal 16 diminta apabila mengakses ip Eden `192.182.3.2` akan dialihkan ke `www.wise.C06.com`, maka di default site pada direktori `/var/www/html` perlu ditambahkan file `.htaccess`
 ```
@@ -449,7 +462,7 @@ Kemudian pada file `/etc/apache2/sites-available/000-default.conf` ditambahkan
     AllowOverride All
 </Directory>
 ```
-
+![](https://media.discordapp.net/attachments/964890423946543124/1035984761279225968/2022-10-30_01-27-36.gif?width=893&height=671)
 ## Soal 17
 Setiap gambar dengan substring `eden` akan dialihkan ke `eden.png` sehingga perlu ditambahkan file `.htaccess` pada `/var/www/eden.wise.C06.com/public/images/` sebagai berikut:
 ```
@@ -464,6 +477,7 @@ Kemudian pada `/etc/apache2/sites-available/eden.wise.C06.com` perlu ditambahkan
     AllowOverride All
 </Directory>
 ```
+![](https://media.discordapp.net/attachments/964890423946543124/1035984731969425518/2022-10-30_01-25-04.gif?width=893&height=671)
 ## Revisi
 
 ### Nomor 14 dan 15
